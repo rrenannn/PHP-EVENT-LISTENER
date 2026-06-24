@@ -24,7 +24,7 @@ class EventRepository
         return $this->query()->find($id);
     }
 
-    public function findByUserId(int $userId): Collection
+    public function findByUserId(int $userId): ?Event
     {
         return $this->query()
             ->where('user_id', $userId)
