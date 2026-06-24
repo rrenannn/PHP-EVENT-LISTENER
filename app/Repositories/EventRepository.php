@@ -9,19 +9,26 @@ use Illuminate\Support\Collection;
 class EventRepository
 {
 
-    private function tenantQuery(): Builder
+    private function query(): Builder
     {
-        return Event::query();
+        return Event::query()->where('active', true);
     }
 
     public function getAll(): Collection
     {
-        return Event::all();
+        return $this->query()->get();
     }
 
     public function findById(int $id): ?Event
     {
-        return Event::find($id);
+        return $this->query()->find($id);
+    }
+
+    public function findByUserId(int $userId): Collection
+    {
+        return $this->query()
+            ->where('user_id', $userId)
+            ->get();
     }
 
     public function create(array $data): Event
@@ -32,16 +39,22 @@ class EventRepository
     public function update(Event $model, array $data): Event
     {
         $model->fill($data);
-        $model->updated_at = now();
         $model->save();
 
         return $model;
     }
 
-    public function delete(int $id): int
+    public function delete(int $id): bool
     {
-        return $this->tenantQuery()
-            ->where('id', $id)
-            ->update(['active' => false]);
+        $event = $this->query()->find($id);
+
+        if (!$event) {
+            return false;
+        }
+
+        $event->active = false;
+        $event->save();
+
+        return true;
     }
 }

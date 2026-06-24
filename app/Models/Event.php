@@ -19,9 +19,15 @@ class Event extends Model
         'description',
         'type',
         'location',
-        'start_at' => 'datetime',
-        'end_at' => 'datetime',
-        'active' => 'boolean',
+        'start_at',
+        'end_at',
+        'active',
         'user_id',
+    ];
+
+    protected $casts = [
+        'start_at' => 'datetime',
+        'end_at'   => 'datetime',
+        'active'   => 'boolean',
     ];
 }
